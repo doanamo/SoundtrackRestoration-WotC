@@ -1,4 +1,21 @@
-class XComTacticalSoundManager_Override extends XComTacticalSoundManager config(GameData);
+class XComTacticalSoundManager_Override extends XComTacticalSoundManager config(SoundtrackRestoration);
+
+var config name GatecrasherMissionOST;
+var config name RetaliationMissionOST;
+var config name SupplyRaidMissionOST;
+var config name FacilityMissionOST;
+var config name LandedUFOMissionOST;
+var config name RescueMissionOST;
+var config name AmbushMissionOST;
+var config name ChosenFortressMissionOST;
+var config name BlacksiteMissionOST;
+var config name ForgeMissionOST;
+var config name PsiGateMissionOST;
+var config name BroadcastTowerMissionOST;
+var config name LostSitrepOST;
+var config name AbandonedCityOST;
+
+var config array<string> RandomTacticalCombatOST;
 
 function EvaluateTacticalMusicState()
 {
@@ -29,79 +46,157 @@ function EvaluateTacticalMusicState()
 		// Gatecrasher and tutorial missions.
 		if (MissionState.GetMissionSource().bStart == true)
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'Tutorial';
+			`LOG("XComTacticalSoundManager - Gatecrasher mission detected!");
+
+			if(GatecrasherMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = GatecrasherMissionOST;
+			}
 		}
 
 		// Retaliation missions.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.Retaliation")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'Tutorial';
+			`LOG("XComTacticalSoundManager - Retaliation mission detected!");
+
+			if(RetaliationMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = RetaliationMissionOST;
+			}
 		}
 
 		// Supply raid missions.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.SupplyRaid_AdvConvoy")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'LostTowerA';
+			`LOG("XComTacticalSoundManager - Supply raid mission detected!");
+
+			if(SupplyRaidMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = SupplyRaidMissionOST;
+			}
 		}
 
 		// Facility missions.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.AlienFacility")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'LostTowerB_GasOn';
+			`LOG("XComTacticalSoundManager - Facility mission detected!");
+
+			if(FacilityMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = FacilityMissionOST;
+			}
+			
 		}
 
 		// Landed UFO missions.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.Landed_UFO")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'DerelictFacility';
+			`LOG("XComTacticalSoundManager - Landed UFO mission detected!");
+
+			if(LandedUFOMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = LandedUFOMissionOST;
+			}
+			
 		}
 
-		// Rescue Soldier missions.
+		// Rescue missions.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "StaticMesh'UI_3D.Overwold_Final.RescueOps'")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'LostTower_BossFight';
+			`LOG("XComTacticalSoundManager - Rescue mission detected!");
+
+			if(RescueMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = RescueMissionOST;
+			}
 		}
 
-		// Escape Ambush missions.
+		// Ambush missions.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.EscapeAmbush")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'LostTower_BossFight';
+			`LOG("XComTacticalSoundManager - Ambush mission detected!");
+
+			if(AmbushMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = AmbushMissionOST;
+			}
 		}
 
-		// Lost sitreps and abandoned city maps.
-		if (BattleData.ActiveSitReps.Find('TheLost') != INDEX_NONE || BattleData.ActiveSitReps.Find('TheHorde') != INDEX_NONE || PlotDef.strType == "Abandoned")
-		{
-			MissionState.GetMissionSource().CustomMusicSet = 'LostAndAbandoned';
-		}
-
-		// Chosen Stronghold missions.
+		// Chosen Fortress missions.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "StaticMesh'UI_3D.Overwold_Final.Chosen_Sarcophagus")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'AlienFortress';
+			`LOG("XComTacticalSoundManager - Chosen stronghold mission detected!");
+
+			if(ChosenFortressMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = ChosenFortressMissionOST;
+			}
 		}
 
 		// Blacksite mission.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.Blacksite")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'Tutorial';
+			`LOG("XComTacticalSoundManager - Blacksite mission detected!");
+
+			if(BlacksiteMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = BlacksiteMissionOST;
+			}
 		}
 
 		// Forge mission.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.Forge")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'Tutorial';
+			`LOG("XComTacticalSoundManager - Forge mission detected!");
+
+			if(ForgeMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = ForgeMissionOST;
+			}
 		}
 
 		// Psi Gate mission.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.Forge")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'Tutorial';
+			`LOG("XComTacticalSoundManager - Psi gate mission detected!");
+
+			if(PsiGateMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = PsiGateMissionOST;
+			}
 		}
 
 		// Broadcast Tower mission.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.GP_BroadcastOfTruth")
 		{
-			MissionState.GetMissionSource().CustomMusicSet = 'LostTower_BossFight';
+			`LOG("XComTacticalSoundManager - Broadcast tower mission detected!");
+
+			if(BroadcastTowerMissionOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = BroadcastTowerMissionOST;
+			}
+		}
+
+		// Lost sitreps.
+		if (BattleData.ActiveSitReps.Find('TheLost') != INDEX_NONE || BattleData.ActiveSitReps.Find('TheHorde') != INDEX_NONE)
+		{
+			`LOG("XComTacticalSoundManager - Lost mission detected!");
+
+			if(LostSitrepOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = LostSitrepOST;
+			}
+		}
+
+		// Abandoned city maps.
+		if (PlotDef.strType == "Abandoned")
+		{
+			`LOG("XComTacticalSoundManager - Lost mission detected!");
+
+			if(AbandonedCityOST != '')
+			{
+				MissionState.GetMissionSource().CustomMusicSet = AbandonedCityOST;
+			}
 		}
 
 		// Flight Device mission.
@@ -122,8 +217,8 @@ function EvaluateTacticalMusicState()
 
 		// Lost Towers DLC mission.
 		// Template.CustomMusicSet = 'LostTowerA';
-		// Template.CustomMusicSet = '??';
-		// Template.CustomMusicSet = '??';
+		// Template.CustomMusicSet = 'LostTowerB_GasOn';
+		// Template.CustomMusicSet = 'LostTower_BossFight';
 		// Template.OverworldMeshPath = "Materials_DLC3.3DUI.ShenLastGift";
 
 		// Alien Nest DLC mission.
@@ -151,4 +246,55 @@ function EvaluateTacticalMusicState()
 	// Call overritten method.
 	super.EvaluateTacticalMusicState();
 	`LOG("XComTacticalSoundManager::EvaluateTacticalMusicState() has been called.");
+}
+
+function SelectRandomTacticalMusicSet()
+{
+	local XComGameState_HeadquartersXCom XComHQ;
+	local XComGameState_MissionSite MissionState;
+	local XComGameState_Cheats CheatState;
+	local int RandomIndex;
+	local name SelectSet;
+
+	// first check if a specific music set has been selected from kismet
+	CheatState = class'XComGameState_Cheats'.static.GetVisualizedCheatsObject();
+	if(CheatState != none && CheatState.TacticalMusicSetOverride != '')
+	{
+		SetSwitch('TacticalCombatMusicSet', CheatState.TacticalMusicSetOverride);
+	}
+	else
+	{
+		// check if this mission requests specific music, otherwise play a random set
+		XComHQ = XComGameState_HeadquartersXCom(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
+		MissionState = XComGameState_MissionSite(`XCOMHISTORY.GetGameStateForObjectID(XComHQ.MissionRef.ObjectID));
+
+		if(MissionState == none || MissionState.GetMissionSource().CustomMusicSet == '')
+		{
+			if(RandomTacticalCombatOST.Length > 0)
+			{
+				`LOG("XComTacticalSoundManager - RandomTacticalCombatOST.Length = " $ RandomTacticalCombatOST.Length);
+
+				RandomIndex = `SYNC_RAND(RandomTacticalCombatOST.Length);
+				SelectSet = name(RandomTacticalCombatOST[RandomIndex]);
+
+				if(`REPLAY.bInTutorial)
+				{
+					SetSwitch('TacticalCombatMusicSet', 'Tutorial');
+					`LOG("XComTacticalSoundManager - TacticalCombatMusicSet = \"" $ 'Tutorial' $ "\"");
+				}
+				else
+				{
+					SetSwitch('TacticalCombatMusicSet', SelectSet);
+					`LOG("XComTacticalSoundManager - TacticalCombatMusicSet = \"" $ SelectSet $ "\"");
+				}
+			}
+		}
+		else
+		{		
+			SetSwitch('TacticalCombatMusicSet', MissionState.GetMissionSource().CustomMusicSet);
+			`LOG("XComTacticalSoundManager - TacticalCombatMusicSet = \"" $ MissionState.GetMissionSource().CustomMusicSet $ "\"");
+		}
+	}
+
+	`LOG("XComTacticalSoundManager::SelectRandomTacticalMusicSet() has been called.");
 }

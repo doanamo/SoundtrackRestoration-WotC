@@ -3,7 +3,79 @@
   <PropertyGroup>
     <Guid>346c303d-cdde-469f-9be0-6911ed1c9db3</Guid>
     <Name>SoundtrackRestoration</Name>
-    <Description>Demonstrates how to override XCOM 2 base game classes individually - example provided by Long War Studios</Description>
+    <Description>Reuses soundtracks exclusive to Shen's Gift, Alien Hunters, Lost and Abandoned missions in addition to few others from the base game that are rarely used.
+
+[h1]Features[/h1]
+[b]Mission Soundtracks (Customizable):[/b]
+[list]
+[*][b]Lost missions: Now use the soundtrack from Lost and Abandoned mission.[/b]
+[*][b]Abandoned city missions: Now use the soundtrack from Lost and Abandoned mission.[/b]
+[*]Gatecrasher mission: Now uses the tense soundtrack from Tutorial and Avenger Defense missions.
+[*]Retaliation missions: Now use the tense soundtrack from Tutorial and Avenger Defense missions.
+[*]Landed UFO missions: Now use the soundtrack from Alien Hunters mission.
+[*]Chosen fortress missions: Now use the soundtrack from the final alien fortress mission.
+[*][i]Other missions can be customized with INI file.[/i]
+[/list]
+
+[b]Combat Soundtracks: (Customizable)[/b]
+[list]
+[*]Tutorial and Avenger Defense tracks have been added to the random pool of combat music tracks.
+[*]All three tracks from Shen's Last Gift have been added to the random pool of combat music tracks.
+[/list]
+
+[b]Avenger Soundtracks:[/b]
+[list]
+[*]Stage Two soundtrack in the strategic layer will trigger much earlier once Magnetic Weapons and Plated Armor technologies are researched.
+[*]Stage Three soundtrack in the strategic layer will trigger earlier once Shadow Chamber is built.
+[/list]
+
+[h1]Soundtracks[/h1]
+[list]
+[*]Tutorial and Avenger Defense - https://www.youtube.com/watch?v=mRp1_AK7IoM
+[*]Avenger Stage Two - https://www.youtube.com/watch?v=qcLerJhXXt8
+[*]Avenger Stage Three - https://www.youtube.com/watch?v=8uqRUeJpEZk
+[*]Alien Fortress - https://www.youtube.com/watch?v=f4sP6pNgJvY
+[*]Alien Hunters (Alien Nest) - https://www.youtube.com/watch?v=1Zhs2ntihcQ
+[*]Shen's Last Gift (Ground Level) - https://www.youtube.com/watch?v=bda5p--Gz30
+[*]Shen's Last Gift (Laboratory) - https://www.youtube.com/watch?v=_NRY0XOVbV0
+[*]Shen's Last Gift (Boss Fight) - https://www.youtube.com/watch?v=81A5ibp0e_4
+[*]Lost and Abandoned - https://www.youtube.com/watch?v=qAQP83Mex7I
+[/list]
+
+[h1]Customization[h1]
+
+
+[h1]Planned[/h1]
+[list]
+[*]Implement INI configuration file.
+[*]Allow random soundtrack pool in the tactical layer to be expanded.
+[*]Restore squad selection soundtrack from the base game for non story missions (not trivial to implement).
+[*]Restore main menu soundtrack from the base game (not trivial to implement).
+[*]Implement custom music set overrides for alien rulers and other special enemies, in addition to chosen (appears impossible at the moment).
+[/list]
+
+[h1]Compatibility[/h1]
+[list]
+[*][b]Compatible with existing saves and can be safely removed at any point.[/b]
+[*]Requires War of the Chosen expansion pack and will not work with the base game.
+[*]Overrides "XComTacticalSoundManager" and "XComStrategySoundManager" classes.
+[/list]
+
+[h1]Bugs[/h1]
+If you encounter a mission without any soundtrack, it means that this mod is the most likely culprit. Let me know if this happens!
+
+[h1]FAQ[/h1]
+Q: Do I need Shen's Last Gift or Alien Hunters DLCs for this mod to work?
+A: No. Soundtracks from DLCs are including within War of the Chosen expansion pack.
+
+Q: Does this mod require Robojumper's Music Modding System or any other mods?
+A: No. This is a standalone mod.
+
+Q: Does this mod replace default soundtracks entirely?
+A: No. This mod replaces soundtracks in roughly 1/3 of missions that you will encounter.
+
+[h1]Credits[/h1] 
+http://game-icons.net - Workshop thumbnail icon</Description>
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>ExampleClassOverride</AssemblyName>
     <RootNamespace>ExampleClassOverride</RootNamespace>
@@ -12,6 +84,9 @@
   <ItemGroup>
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComSoundtrackRestoration.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ModPreview.jpg" />
     <Content Include="ReadMe.txt" />
     <Content Include="Src\SoundtrackRestoration\Classes\XComStrategySoundManager_Override.uc">

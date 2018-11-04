@@ -48,7 +48,7 @@ function EvaluateTacticalMusicState()
 		`LOG("XComTacticalSoundManager - PlotDef = \"" $ PlotDef.strType $ "\"");
 	}
 	
-	// Set custom music sets.
+	// Change music if the current mission does not have a custom one set already.
 	if (MissionState.GetMissionSource().CustomMusicSet == '')
 	{
 		// Gatecrasher and tutorial missions.
@@ -151,7 +151,7 @@ function EvaluateTacticalMusicState()
 			}
 		}
 
-		// Chosen Fortress missions.
+		// Chosen fortress missions.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "StaticMesh'UI_3D.Overwold_Final.Chosen_Sarcophagus")
 		{
 			if(Debug == true)
@@ -165,12 +165,12 @@ function EvaluateTacticalMusicState()
 			}
 		}
 
-		// Blacksite mission.
+		// Black site mission.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.Blacksite")
 		{
 			if(Debug == true)
 			{
-				`LOG("XComTacticalSoundManager - Blacksite mission detected!");
+				`LOG("XComTacticalSoundManager - Black site mission detected!");
 			}
 
 			if(BlacksiteMissionOST != '')
@@ -207,7 +207,7 @@ function EvaluateTacticalMusicState()
 			}
 		}
 
-		// Broadcast Tower mission.
+		// Broadcast tower mission.
 		if (MissionState.GetMissionSource().OverworldMeshPath == "UI_3D.Overwold_Final.GP_BroadcastOfTruth")
 		{
 			if(Debug == true)
@@ -221,7 +221,7 @@ function EvaluateTacticalMusicState()
 			}
 		}
 
-		// Lost sitreps.
+		// Lost missions.
 		if (BattleData.ActiveSitReps.Find('TheLost') != INDEX_NONE || BattleData.ActiveSitReps.Find('TheHorde') != INDEX_NONE)
 		{
 			if(Debug == true)
@@ -253,7 +253,7 @@ function EvaluateTacticalMusicState()
 		// Template.CustomMusicSet = ''; << Default
 		// Template.MissionImage = "img:///UILibrary_StrategyImages.X2StrategyMap.Alert_Flight_Device";
 
-		// Guerilla missions.
+		// Guerrilla missions.
 		// Template.CustomMusicSet = ''; << Default
 		// Template.OverworldMeshPath = "UI_3D.Overwold_Final.GorillaOps";
 
@@ -293,7 +293,7 @@ function EvaluateTacticalMusicState()
 		// Template.OverworldMeshPath = "UI_3D.Overwold_Final.AlienFortress";
 	}
 
-	// Call overritten method.
+	// Call overwritten method.
 	super.EvaluateTacticalMusicState();
 }
 
@@ -324,7 +324,7 @@ function StartAllAmbience(bool bStartMissionSoundtrack=true)
 		nClimateSwitch = Name(sBiome);
 		nLightingSwitch = GetSwitchNameFromEnvLightingString(sEnvironmentLightingMapName);
 
-		// Plot-specific non-ambience overrides
+		// Plot-specific non-ambiance overrides
 		nPlotNameSwitch = name(PlotDef.MapName);
 		if(AudioPlotNames.Find(nPlotNameSwitch) == INDEX_NONE)
 		{
@@ -338,7 +338,7 @@ function StartAllAmbience(bool bStartMissionSoundtrack=true)
 		`LOG("XComTacticalSoundManager - PlotNameSwitch = \"" $ nPlotNameSwitch $ "\"");
 	}
 
-	// Call overritten method.
+	// Call overwritten method.
 	super.StartAllAmbience(bStartMissionSoundtrack);
 }
 
@@ -382,7 +382,6 @@ function SelectRandomTacticalMusicSet()
 		{
 			if(RandomTacticalCombatOST.Length > 0)
 			{
-
 				if(Debug == true)
 				{
 					`LOG("XComTacticalSoundManager - RandomTacticalCombatOST.Length = " $ RandomTacticalCombatOST.Length);
@@ -393,6 +392,7 @@ function SelectRandomTacticalMusicSet()
 
 				if(`REPLAY.bInTutorial)
 				{
+					`SOUNDMGR.SetState('SoundtrackGame', 'XCom2');
 					SetSwitch('TacticalCombatMusicSet', 'Tutorial');
 
 					if(Debug == true)
@@ -402,7 +402,25 @@ function SelectRandomTacticalMusicSet()
 				}
 				else
 				{
-					SetSwitch('TacticalCombatMusicSet', SelectSet);
+					string SelectSetString = string(SelectSet);
+	
+					if(InStr(SelectSetString, "_TLE") != -1)
+					{
+						`SOUNDMGR.SetState('SoundtrackGame', 'XComUFO');
+						SelectSetString = Repl(SelectSetString, "_TLE", "");
+					}
+					else if(InStr(SelectSetString, "_XCOM1") != -1)
+					{
+						`SOUNDMGR.SetState('SoundtrackGame', 'XCom1');
+						SelectSetString = Repl(SelectSetString, "_XCOM1", "");
+					}
+					else
+					{
+						`SOUNDMGR.SetState('SoundtrackGame', 'XCom2');
+						SelectSetString = Repl(SelectSetString, "_XCOM2", "");
+					}
+					
+					SetSwitch('TacticalCombatMusicSet', name(SelectSetString));
 
 					if(Debug == true)
 					{
@@ -413,6 +431,7 @@ function SelectRandomTacticalMusicSet()
 		}
 		else
 		{
+			`SOUNDMGR.SetState('SoundtrackGame', 'XCom2');
 			SetSwitch('TacticalCombatMusicSet', MissionState.GetMissionSource().CustomMusicSet);
 
 			if(Debug == true)
@@ -422,7 +441,7 @@ function SelectRandomTacticalMusicSet()
 		}
 	}
 
-	// Handle two random tracks for Lost and Abanoned OST.
+	// Handle two random tracks for Lost and Abandoned OST.
 	BattleData = XComGameState_BattleData(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_BattleData', true));
 
 	if(SelectSet == 'LostAndAbandoned' || MissionState.GetMissionSource().CustomMusicSet == 'LostAndAbandoned')

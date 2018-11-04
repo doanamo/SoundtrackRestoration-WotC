@@ -41,7 +41,6 @@ function SetCustomSoundtrack(string SelectSet)
 function PlayBaseViewMusic()
 {
 	local int RandomIndex;
-	local name SelectSet;
 
 	local XComGameState_HeadquartersXCom XComHQ;
 	XComHQ = XComGameState_HeadquartersXCom(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));

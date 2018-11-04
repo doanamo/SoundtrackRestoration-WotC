@@ -360,6 +360,7 @@ function SelectRandomTacticalMusicSet()
 	local XComGameState_Cheats CheatState;
 	local int RandomIndex;
 	local name SelectSet;
+	local string SelectSetString;
 
 	if(Debug == true)
 	{
@@ -402,7 +403,7 @@ function SelectRandomTacticalMusicSet()
 				}
 				else
 				{
-					string SelectSetString = string(SelectSet);
+					SelectSetString = string(SelectSet);
 	
 					if(InStr(SelectSetString, "_TLE") != -1)
 					{

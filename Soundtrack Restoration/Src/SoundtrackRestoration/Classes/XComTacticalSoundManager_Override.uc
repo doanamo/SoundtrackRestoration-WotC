@@ -17,9 +17,56 @@ var config name BroadcastTowerMissionOST;
 var config name LostSitrepOST;
 var config name AbandonedCityOST;
 
+var config array<string> ExplorationOST;
 var config array<string> RandomTacticalCombatOST;
+var config array<string> MissionSuccessOST;
+var config array<string> MissionFlawlessOST;
+var config array<string> MissionFailureOST;
 
-function EvaluateTacticalMusicState()
+function SetDefaultSoundtrack()
+{
+	local XComOnlineProfileSettings ProfileSettings;
+	ProfileSettings = `XPROFILESETTINGS;
+	
+	switch (ProfileSettings.Data.m_iSoundtrackChoice)
+	{
+		case 0: `SOUNDMGR.SetState('SoundtrackGame', 'XComUFO'); break;
+		case 1: `SOUNDMGR.SetState('SoundtrackGame', 'XCom1'); break;
+		case 2: `SOUNDMGR.SetState('SoundtrackGame', 'XCom2'); break;
+	}
+
+	if(Debug == true)
+	{
+		`LOG("XComTacticalSoundManager::SetDefaultSoundtrack() has been called (Soundtrack settings = " $ ProfileSettings.Data.m_iSoundtrackChoice $ ").");
+	}
+}
+
+function SetCustomSoundtrack(string SelectSet)
+{
+	if(Debug == true)
+	{
+		`LOG("XComTacticalSoundManager::SetCustomSoundtrack() has been called (SelectSet argument = " $ SelectSet $ ").");
+	}
+
+	if(InStr(SelectSet, "_TLE") != -1)
+	{
+		`SOUNDMGR.SetState('SoundtrackGame', 'XComUFO');
+	}
+	else if(InStr(SelectSet, "_XCOM1") != -1)
+	{
+		`SOUNDMGR.SetState('SoundtrackGame', 'XCom1');
+	}
+	else if(InStr(SelectSet, "_XCOM2") != -1)
+	{
+		`SOUNDMGR.SetState('SoundtrackGame', 'XCom2');
+	}
+	else
+	{
+		SetDefaultSoundtrack();
+	}
+}
+
+function OverrideMusicState()
 {
 	local XComGameStateHistory History;
 	local XComGameState_Cheats CheatState;
@@ -38,8 +85,7 @@ function EvaluateTacticalMusicState()
 
 	if(Debug == true)
 	{
-		`LOG("XComTacticalSoundManager - Version 3.1");
-		`LOG("XComTacticalSoundManager::EvaluateTacticalMusicState() has been called.");
+		`LOG("XComTacticalSoundManager::OverrideMusicState() has been called (Version 4.0).");
 
 		// Debug logging.
 		`LOG("XComTacticalSoundManager - TacticalMusicSetOverride = \"" $ CheatState.TacticalMusicSetOverride $ "\"");
@@ -291,7 +337,24 @@ function EvaluateTacticalMusicState()
 		// Final mission.
 		// Template.CustomMusicSet = 'AlienFortress';
 		// Template.OverworldMeshPath = "UI_3D.Overwold_Final.AlienFortress";
+
+		// These can only use base XCOM2 tracks.
+		if(MissionState.GetMissionSource().CustomMusicSet != '')
+		{
+			`SOUNDMGR.SetState('SoundtrackGame', 'XCom2');
+		}
 	}
+}
+
+function EvaluateTacticalMusicState()
+{
+	if(Debug == true)
+	{
+		`LOG("XComTacticalSoundManager::EvaluateTacticalMusicState() has been called.");
+	}
+
+	// Overide music state when combat starts.
+	OverrideMusicState();
 
 	// Call overwritten method.
 	super.EvaluateTacticalMusicState();
@@ -300,6 +363,8 @@ function EvaluateTacticalMusicState()
 function StartAllAmbience(bool bStartMissionSoundtrack=true)
 {
 	local XComGameState_BattleData BattleData;
+	local XComGameState_MissionSite MissionState;
+	local XComGameState_HeadquartersXCom XComHQ;
 
 	local string sBiome;
 	local string sEnvironmentLightingMapName;
@@ -308,6 +373,9 @@ function StartAllAmbience(bool bStartMissionSoundtrack=true)
 	local name nClimateSwitch;
 	local name nLightingSwitch;
 	local name nPlotNameSwitch;
+
+	local int RandomIndex;
+	local string SelectSetString;
 
 	if(Debug == true)
 	{
@@ -337,6 +405,39 @@ function StartAllAmbience(bool bStartMissionSoundtrack=true)
 		`LOG("XComTacticalSoundManager - LightingSwitch = \"" $ nLightingSwitch $ "\"");
 		`LOG("XComTacticalSoundManager - PlotNameSwitch = \"" $ nPlotNameSwitch $ "\"");
 	}
+
+	// Set random ambient music at the start of a mission.
+	XComHQ = XComGameState_HeadquartersXCom(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
+	MissionState = XComGameState_MissionSite(`XCOMHISTORY.GetGameStateForObjectID(XComHQ.MissionRef.ObjectID));
+
+	if (MissionState.GetMissionSource().CustomMusicSet == '')
+	{
+		RandomIndex = `SYNC_RAND(ExplorationOST.Length);
+		SelectSetString = ExplorationOST[RandomIndex];
+
+		if(InStr(SelectSetString, "_TLE") != -1)
+		{
+			`SOUNDMGR.SetState('SoundtrackGame', 'XComUFO');
+			SelectSetString = Repl(SelectSetString, "_TLE", "");
+		}
+		else if(InStr(SelectSetString, "_XCOM1") != -1)
+		{
+			`SOUNDMGR.SetState('SoundtrackGame', 'XCom1');
+			SelectSetString = Repl(SelectSetString, "_XCOM1", "");
+		}
+		else if(InStr(SelectSetString, "_XCOM2") != -1)
+		{
+			`SOUNDMGR.SetState('SoundtrackGame', 'XCom2');
+			SelectSetString = Repl(SelectSetString, "_XCOM2", "");
+		}
+		else
+		{
+			SetDefaultSoundtrack();
+		}
+	}
+
+	// Overide music state when ambient starts.
+	OverrideMusicState();
 
 	// Call overwritten method.
 	super.StartAllAmbience(bStartMissionSoundtrack);
@@ -415,10 +516,14 @@ function SelectRandomTacticalMusicSet()
 						`SOUNDMGR.SetState('SoundtrackGame', 'XCom1');
 						SelectSetString = Repl(SelectSetString, "_XCOM1", "");
 					}
-					else
+					else if(InStr(SelectSetString, "_XCOM2") != -1)
 					{
 						`SOUNDMGR.SetState('SoundtrackGame', 'XCom2');
 						SelectSetString = Repl(SelectSetString, "_XCOM2", "");
+					}
+					else
+					{
+						SetDefaultSoundtrack();
 					}
 					
 					SetSwitch('TacticalCombatMusicSet', name(SelectSetString));
@@ -459,10 +564,106 @@ function SelectRandomTacticalMusicSet()
 			{
 				SetState('PlotName', 'None');
 			}
+
+			if(Debug == true)
+			{
+				`LOG("XComTacticalSoundManager - PlotName for Lost And Abandononed override.");
+			}
 		}
 	}
 	else
 	{
 		SetState('PlotName', 'None');
+	}
+}
+
+function PlayAfterActionMusic()
+{
+	local int RandomIndex;
+
+	local XComGameStateHistory History;
+	local XComGameState_BattleData BattleData;
+	local XComGameState_HeadquartersXCom XComHQ;
+	local XComGameState_Unit UnitState;
+	local bool bCasualties, bVictory;
+	local int idx;
+
+	if(Debug == true)
+	{
+		`LOG("XComTacticalSoundManager::PlayAfterActionMusic() has been called.");
+	}
+
+	History = `XCOMHISTORY;
+	BattleData = XComGameState_BattleData(History.GetSingleGameStateObjectForClass(class'XComGameState_BattleData', true));
+	XComHQ = XComGameState_HeadquartersXCom(History.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
+	bCasualties = false;
+
+	if(BattleData != none)
+	{
+		bVictory = BattleData.bLocalPlayerWon;
+	}
+	else
+	{
+		bVictory = XComHQ.bSimCombatVictory;
+	}
+
+	if(!bVictory)
+	{
+		if(MissionFailureOST.Length > 0)
+		{
+			RandomIndex = `SYNC_RAND(MissionFailureOST.Length);
+			SetCustomSoundtrack(MissionFailureOST[RandomIndex]);
+		}
+		else
+		{
+			SetDefaultSoundtrack();
+		}
+
+		SetSwitch('StrategyScreen', 'PostMissionFlow_Fail');
+		//PlaySoundEvent("PlayPostMissionFlowMusic_Failure");
+	}
+	else
+	{
+		for(idx = 0; idx < XComHQ.Squad.Length; idx++)
+		{
+			UnitState = XComGameState_Unit(History.GetGameStateForObjectID(XComHQ.Squad[idx].ObjectID));
+
+			if(UnitState != none && UnitState.IsDead())
+			{
+				bCasualties = true;
+				break;
+			}
+		}
+
+		if(bCasualties)
+		{
+			if(MissionSuccessOST.Length > 0)
+			{
+				RandomIndex = `SYNC_RAND(MissionSuccessOST.Length);
+				SetCustomSoundtrack(MissionSuccessOST[RandomIndex]);
+			}
+			else
+			{
+				SetDefaultSoundtrack();
+			}
+
+			SetSwitch('StrategyScreen', 'PostMissionFlow_Pass');
+			//PlaySoundEvent("PlayPostMissionFlowMusic_VictoryWithCasualties");
+		}
+		else
+		{
+			if(MissionFlawlessOST.Length > 0)
+			{
+				RandomIndex = `SYNC_RAND(MissionFlawlessOST.Length);
+				SetCustomSoundtrack(MissionFlawlessOST[RandomIndex]);
+			}
+			else
+			{
+				SetDefaultSoundtrack();
+			}
+
+			SetSwitch('StrategyScreen', 'PostMissionFlow_FlawlessVictory');
+			//PlaySoundEvent("PlayPostMissionFlowMusic_FlawlessVictory");
+		}
 	}
 }

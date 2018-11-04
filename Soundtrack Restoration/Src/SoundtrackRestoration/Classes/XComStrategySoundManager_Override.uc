@@ -1,5 +1,7 @@
 class XComStrategySoundManager_Override extends XComStrategySoundManager config(SoundtrackRestoration);
 
+var config bool Debug;
+
 var config array<string> GeoscapeOST;
 var config array<string> Chapter01OST;
 var config array<string> Chapter02OST;
@@ -20,10 +22,20 @@ function SetDefaultSoundtrack()
 		case 1: `SOUNDMGR.SetState('SoundtrackGame', 'XCom1'); break;
 		case 2: `SOUNDMGR.SetState('SoundtrackGame', 'XCom2'); break;
 	}
+
+	if(Debug == true)
+	{
+		`LOG("XComStrategySoundManager - SetDefaultSoundtrack() has been called (Soundtrack settings = " $ ProfileSettings.Data.m_iSoundtrackChoice $ ").");
+	}
 }
 
 function SetCustomSoundtrack(string SelectSet)
 {
+	if(Debug == true)
+	{
+		`LOG("XComStrategySoundManager - SetCustomSoundtrack() has been called (SelectSet argument = " $ SelectSet $ ").");
+	}
+
 	if(InStr(SelectSet, "_TLE") != -1)
 	{
 		`SOUNDMGR.SetState('SoundtrackGame', 'XComUFO');
@@ -32,9 +44,13 @@ function SetCustomSoundtrack(string SelectSet)
 	{
 		`SOUNDMGR.SetState('SoundtrackGame', 'XCom1');
 	}
-	else
+	else if(InStr(SelectSet, "_XCOM2") != -1)
 	{
 		`SOUNDMGR.SetState('SoundtrackGame', 'XCom2');
+	}
+	else
+	{
+		SetDefaultSoundtrack();
 	}
 }
 
@@ -44,6 +60,11 @@ function PlayBaseViewMusic()
 
 	local XComGameState_HeadquartersXCom XComHQ;
 	XComHQ = XComGameState_HeadquartersXCom(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
+
+	if(Debug == true)
+	{
+		`LOG("XComStrategySoundManager - PlayBaseViewMusic() has been called.");
+	}
 
 	SetSwitch('StrategyScreen', 'Avenger');
 
@@ -95,6 +116,11 @@ function PlayGeoscapeMusic()
 {
 	local int RandomIndex;
 
+	if(Debug == true)
+	{
+		`LOG("XComStrategySoundManager - PlayGeoscapeMusic() has been called.");
+	}
+
 	if(GeoscapeOST.Length > 0)
 	{
 		RandomIndex = `SYNC_RAND(GeoscapeOST.Length);
@@ -111,6 +137,11 @@ function PlayGeoscapeMusic()
 function PlaySquadSelectMusic()
 {
 	local int RandomIndex;
+
+	if(Debug == true)
+	{
+		`LOG("XComStrategySoundManager - PlaySquadSelectMusic() has been called.");
+	}
 
 	if(SquadSelectOST.Length > 0)
 	{
@@ -129,6 +160,11 @@ function PlayCreditsMusic()
 {
 	local int RandomIndex;
 
+	if(Debug == true)
+	{
+		`LOG("XComStrategySoundManager - PlayCreditsMusic() has been called.");
+	}
+
 	if(MissionFlawlessOST.Length > 0)
 	{
 		RandomIndex = `SYNC_RAND(MissionFlawlessOST.Length);
@@ -145,6 +181,11 @@ function PlayCreditsMusic()
 function PlayLossMusic()
 {
 	local int RandomIndex;
+
+	if(Debug == true)
+	{
+		`LOG("XComStrategySoundManager - PlayLossMusic() has been called.");
+	}
 
 	if(MissionFailureOST.Length > 0)
 	{
@@ -169,6 +210,11 @@ function PlayAfterActionMusic()
 	local XComGameState_Unit UnitState;
 	local bool bCasualties, bVictory;
 	local int idx;
+
+	if(Debug == true)
+	{
+		`LOG("XComStrategySoundManager - PlayAfterActionMusic() has been called.");
+	}
 
 	History = `XCOMHISTORY;
 	BattleData = XComGameState_BattleData(History.GetSingleGameStateObjectForClass(class'XComGameState_BattleData', true));

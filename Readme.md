@@ -1,6 +1,6 @@
 Soundtrack Restoriation (WotC)
 ====
-Mod for XCOM 2's latest expansion War of the Chosen running on Unreal Engine 3. Restores and resuses soundtracks exclusive to Shen's Gift, Alien Hunters, Lost and Abandoned mission DLCs in addition to few others from the base game that are rarely used.
+Mod for XCOM 2's latest expansion War of the Chosen running on Unreal Engine 3. Restores and reuses soundtracks exclusive to XCOM UFO (TLE), XCOM Enemy Unknown (TLE), Shen's Gift, Alien Hunters, Lost and Abandoned mission DLCs in addition to few others from the base game that are rarely used.
 
 Steam Workshop link: http://steamcommunity.com/sharedfiles/filedetails/?id=1137361817
 
